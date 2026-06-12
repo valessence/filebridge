@@ -1,0 +1,33 @@
+# Minimal deploy for Oracle Cloud — no database needed for file sharing.
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    expose:
+      - "3000"
+    environment:
+      APP_SECRET: ${APP_SECRET}
+      DOMAIN: ${DOMAIN}
+      PORT: 3000
+      HOST: 0.0.0.0
+      NODE_ENV: production
+    command: ["node", "dist/boot.js"]
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+volumes:
+  caddy_data:
+  caddy_config:
