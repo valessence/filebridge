@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: filebridge
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: node dist/boot.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_SECRET
+        generateValue: true
